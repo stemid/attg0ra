@@ -1,3 +1,5 @@
+# Database access driver for ToDo app
+
 from ConfigParser import ConfigParser
 import psycopg2
 
