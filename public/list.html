@@ -1,0 +1,11 @@
+</p>
+  <a href="#/create">Skapa ny sak Att Göra</a>
+</p>
+
+<input ng-model="query" placeholder="Sök...">
+
+<ul id="todo-list">
+  <li ng-repeat="todo in todos | filter:query">
+    <a href="#/todo/{{todo.id}}" class="todo-link">{{todo.title}}</a>
+  </li>
+</ul>

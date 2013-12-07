@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" ng-app="todoApp">
   <head>
     <meta charset="utf-8">
     <title>Att Göra</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/static/assets/attg0ra.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/static/assets/js/angular.min.js"></script>
+    <script type="text/javascript" src="/static/assets/js/angular-route.min.js"></script>
+    <script type="text/javascript" src="/static/assets/js/todo.js"></script>
+    <script type="text/javascript" src="/static/assets/js/controllers.js"></script>
   </head>
-  <body ng-app="todoApp">
+  <body>
     <div id="content-wrap" ng-view>
     </div>
   </body>
