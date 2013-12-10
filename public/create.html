@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h3>Skapa</h3>
+</div>
+
+<form id="create-form">
+  <fieldset>
+    <div class="modal-body">
+      <legend>Skapa sak att göra</legend>
+      <div class="form-group">
+        <label for="inputTitle">Välj en titel</label>
+        <input 
+          name="inputTitle"
+          placeholder="Skriv en beskrivande titel här..." 
+          aria-required="true"
+          ng-model="todo.title">
+      </div>
+      <div class="form-group">
+        <label for="inputTodo">Skriv en beskrivning</label>
+        <textarea 
+          name="inputTodo"
+          placeholder="Skriv en längre beskrivning..."
+          ng-model="todo.text"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <div class="form-group">
+        <button class="btn btn-primary" 
+          data-loading-text="Skapar..."
+          ng-click="create()">Skapa</button>
+        <button class="btn btn-large" ng-click="close()">Stäng</button>
+      </div>
+    </div>
+  </fieldset>
+</form>

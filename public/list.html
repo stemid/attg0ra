@@ -1,8 +1,8 @@
-</p>
-  <a href="#/create">Skapa ny sak Att Göra</a>
-</p>
+<div class="text-center">
+  <p><button class="btn col-lg-12" ng-click="open()">Skapa ny</button></p>
+</div>
 
-<input ng-model="query" placeholder="Sök...">
+<input id="todo-search" class="form-control" ng-model="query" placeholder="Sök...">
 
 <ul id="todo-list">
   <li ng-repeat="todo in todos | filter:query">
