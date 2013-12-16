@@ -6,8 +6,8 @@
 // kunna definiera routes, och alla controllers från controllers.js. 
 var todoApp = angular.module('todoApp', [
   'ngRoute',
-  'todoAppControllers',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'todoAppControllers'
 ]);
 
 // Här definieras routes precis som i bottle.py t.ex.
