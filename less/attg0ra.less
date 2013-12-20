@@ -30,3 +30,22 @@ body {
 #todo-search {
   margin-bottom:25px;
 }
+
+/* Fix for modal in BS3 with Angular UI */
+.modal {
+  display: block;
+  height:0;
+  overflow:visible;
+}
+
+.modal-body:before,
+.modal-body:after {
+  display:table;
+  content: " ";
+}
+
+.modal-header:before,
+.modal-header:after {
+  display: table;
+  content: " ";
+}
