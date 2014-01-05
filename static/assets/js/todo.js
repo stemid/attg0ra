@@ -10,6 +10,10 @@ var todoApp = angular.module('todoApp', [
   'todoAppControllers'
 ]);
 
+todoApp.constant('todoSettings', {
+  apiUrl: 'http://192.168.22.135:8000/'
+});
+
 // Här definieras routes precis som i bottle.py t.ex.
 // Det verkar som att man använder when och otherwise metoderna i routeProvider 
 // objektet, och varje gång en av metoderna anropas så får man en ny instans 

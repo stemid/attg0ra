@@ -1,9 +1,11 @@
 # Very standard JSON handler for the ToDo app.
 
+from __future__ import print_function
+from sys import stderr
 from urllib import urlencode, unquote
 from json import dumps, loads, JSONEncoder
 from datetime import datetime
-from bottle import route, run, request, default_app
+from bottle import route, run, request, default_app, response, debug
 from Todo.Database import Database
 
 db = Database()
@@ -20,12 +22,12 @@ class DateEncoder(JSONEncoder):
 @route('/', method='GET')
 @route('/<date>', method='GET')
 def list(date=None):
-    from bottle import response
     response.content_type = 'application/json'
 
     if date is not None:
         date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
 
+    # Make a list of items to respond with
     response_list = []
     try:
         for (edited, todo) in db:
@@ -40,21 +42,28 @@ def list(date=None):
         response.status = 500
         return { 'error': str(e) }
 
+    # Return 404 if the list is empty
     if not len(response_list):
         response.status = 404
         return { 'error': 'Not found' }
 
+    # Return JSON data of the list, use the DateEncoder for datetime fields
     return dumps(response_list, cls = DateEncoder)
 
 # Create a new item by POST.
 @route('/', method='POST')
 def create():
-    from bottle import response
     response.content_type = 'application/json'
 
+    print(response.body, file=stderr)
     created = datetime.now()
-    title = request.forms.get('inputTitle', 'No title')
-    todo = request.forms.get('inputTodo', 'No content')
+    try:
+        jsonBody = loads(response.body)
+        title = request.json.get('inputTitle', 'No title')
+        todo = request.json.get('inputTodo', 'No content')
+    except Exception as e:
+        response.status = 500
+        return { 'error': str(e) }
 
     text = dumps({
         'created': str(created),
@@ -73,7 +82,6 @@ def create():
 # Delete an item.
 @route('/<date>', method='DELETE')
 def delete(date):
-    from bottle import response
     response.content_type = 'application/json'
 
     edited = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
@@ -97,7 +105,6 @@ def delete(date):
 # Update an item.
 @route('/<date>', method='UPDATE')
 def update(date):
-    from bottle import response
     response.content_type = 'application/json'
 
     edited = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
@@ -127,6 +134,7 @@ def update(date):
     return { 'status': 'Updated' }
 
 if __name__ == '__main__':
-    run(host='localhost', port=8000, debug=True)
+    run(host='0.0.0.0', port=8000)
+    debug(True)
 else:
     application = default_app()

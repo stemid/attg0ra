@@ -14,16 +14,16 @@ todoAppControllers.controller('todoListCtrl',
                                 '$http', 
                                 '$log',
                                 '$modal',
+                                'todoSettings',
 
-  function ($scope, $http, $log, $modal) {
+  function ($scope, $http, $log, $modal, todoSettings) {
     // Här hämtas JSON data från en webbserver med $http tjänsten, som är
     // definierad i början som ett beroende för controllern. 
-    $http.get('http://localhost:8000/').
+    $http.get(todoSettings.apiUrl).
       success(function (data, status) {
         $log.info('HTTP GET returned: ' + data + ', status: ' + status);
         $scope.todos = data;
-      }
-    ).
+      }).
       error(function (data, status, headers, config) {
         $log.info('HTTP GET returned error: ' + status);
         $scope.todos = [
@@ -31,15 +31,40 @@ todoAppControllers.controller('todoListCtrl',
             'title': 'No items found'
           }
         ];
-      }
-    );
+      });
+
+    $scope.todo = {
+      inputTitle: null,
+      inputTodo: null
+    };
     
     // Här kan även definieras allt möjligt annat, som t.ex. en modal med ett 
     // formulär som ska visas i samma controller
     $scope.open = function () {
       var createFormModal = $modal.open({
         templateUrl: 'create.html',
-        controller: 'ModalCreateCtrl',
+        controller: function ($scope, $modalInstance, $log, todo) {
+          $scope.todo = todo;
+          $scope.create = function () {
+            var jsonData = JSON.stringify($scope.todo);
+            $log.info($scope.todo);
+            $log.info('Submitting form: ' + todoSettings.apiUrl + jsonData);
+            $http({
+              method: 'POST',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+              },
+              url: todoSettings.apiUrl, 
+              data: $scope.todo
+            }).
+              success(function () {
+                $modalInstance.dismiss('cancel');
+              });
+          };
+          $scope.close = function () {
+            $modalInstance.dismiss('cancel');
+          };
+        },
         resolve: {
           todo: function () {
             $log.info('resolving');
@@ -50,24 +75,6 @@ todoAppControllers.controller('todoListCtrl',
     }
   }
 ]);
-
-// Här definieras modal controllern som anropas från TodoListCtrl.
-// En controller är i sin enklaste form bara en funktion med ett visst symbolnamn
-// som går att slå upp i någon sorts JS-namnrymd. 
-var ModalCreateCtrl = function ($scope, $modalInstance, $log) {
-  $scope.empty = {};
-
-  $log.info('in the modal controller');
-
-  $scope.create = function (input) {
-    var $form = $('#create-form');
-    var data = $form.serialize();
-    $http.post('http://localhost:8000/', data).
-      success(function (data) {
-        $log.info(data);
-      });
-  };
-}
 
 todoAppControllers.controller('todoShowCtrl', ['$scope', '$routeParams',
   function ($scope, $routeParams) {

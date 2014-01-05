@@ -4,33 +4,43 @@
       <h3>Skapa</h3>
     </div>
 
-    <form id="create-form">
+    <form ng-submit="create()" class="form-horizontal" role="form" id="create-form">
       <fieldset>
         <div class="modal-body">
           <legend>Skapa sak att göra</legend>
           <div class="form-group">
-            <label for="inputTitle">Välj en titel</label>
-            <input 
-              name="inputTitle"
-              placeholder="Skriv en beskrivande titel här..." 
-              aria-required="true"
-              ng-model="todo.title">
+            <label class="col-sm-4" for="inputTitle">Välj en titel</label>
+            <div class="col-sm-8">
+              <input 
+                class="form-control"
+                ng-model="todo.inputTitle"
+                placeholder="Skriv en beskrivande titel här..." 
+                aria-required="true">
+            </div>
           </div>
           <div class="form-group">
-            <label for="inputTodo">Skriv en beskrivning</label>
-            <textarea 
-              name="inputTodo"
-              placeholder="Skriv en längre beskrivning..."
-              ng-model="todo.text"></textarea>
+            <label class="col-sm-4" for="inputTodo">Skriv en beskrivning</label>
+            <div class="col-sm-8">
+              <textarea 
+                class="form-control"
+                ng-model="todo.inputTodo"
+                placeholder="Skriv en längre beskrivning i markdown..."></textarea>
+            </div>
           </div>
         </div>
 
         <div class="modal-footer">
           <div class="form-group">
-            <button class="btn btn-primary" 
-              data-loading-text="Skapar..."
-              ng-click="create()">Skapa</button>
-            <button class="btn btn-large" ng-click="close()">Stäng</button>
+            <div class="col-sm-offset-2 col-sm-10">
+              <button 
+                type="submit" 
+                class="btn btn-default" 
+                data-loading-text="Skapar...">Skapa</button>
+              <button 
+                type="reset" 
+                class="btn" 
+                ng-click="close()">Stäng</button>
+            </div>
           </div>
         </div>
       </fieldset>
