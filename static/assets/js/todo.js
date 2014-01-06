@@ -11,7 +11,7 @@ var todoApp = angular.module('todoApp', [
 ]);
 
 todoApp.constant('todoSettings', {
-  apiUrl: 'http://0.0.0.0:8000'
+  apiUrl: 'http://ihack.swehack.local:8000'
 });
 
 // Här definieras routes precis som i bottle.py t.ex.

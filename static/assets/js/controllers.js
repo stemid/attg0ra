@@ -90,11 +90,12 @@ todoAppControllers.controller('todoListCtrl',
         url: todoSettings.apiUrl + '/' + edited
       }).
         success(function () {
-          $log.info('Success DELETE');
+          $log.info('DELETE Success');
           $scope.reload();
         }).
         error(function () {
-          $log.error('Could not DELETE');
+          $log.error('DELETE Fail');
+          $scope.reload();
         });
     }
 

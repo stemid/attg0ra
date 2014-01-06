@@ -30,10 +30,10 @@ class DateEncoder(JSONEncoder):
 # Jag tror inte detta behövs längre eftersom jag inte kan lista ut hur jag ska 
 # använda application/json med $http.post() i Angular. 
 @route('/', method='OPTIONS')
-@route('/:#.*#', method='OPTIONS')
-def options():
+@route('/<date>', method='OPTIONS')
+def options(date=None):
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
-    response.add_header('Access-Control-Allow-Methods', 'GET POST UPDATE DELETE')
+    response.add_header('Access-Control-Allow-Methods', 'GET, POST, UPDATE, DELETE, OPTIONS')
     response.add_header('Access-Control-Allow-Headers', 'X-Custom-Header')
 
     return 
@@ -43,6 +43,7 @@ def options():
 @route('/<date>', method='GET')
 def list(date=None):
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Methods', 'GET')
     response.content_type = 'application/json'
 
     if date is not None:
@@ -75,6 +76,7 @@ def list(date=None):
 @route('/', method='POST')
 def create():
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Methods', 'POST')
     response.content_type = 'application/json'
 
     print(request.content_type, file=stderr)
@@ -105,6 +107,7 @@ def create():
 @route('/<date>', method='DELETE')
 def delete(date):
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Methods', 'DELETE')
     response.content_type = 'application/json'
 
     edited = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
@@ -129,6 +132,7 @@ def delete(date):
 @route('/<date>', method='UPDATE')
 def update(date):
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Methods', 'UPDATE')
     response.content_type = 'application/json'
 
     edited = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
