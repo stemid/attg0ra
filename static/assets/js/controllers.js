@@ -98,6 +98,10 @@ todoAppControllers.controller('todoListCtrl',
           $log.info(date);
           $scope.reload = reload;
           // Gör annat specifikt för show.html mallen
+
+          $scope.close = function () {
+            $modalInstance.dismiss('cancel');
+          };
         },
         resolve: {
           reload: function () {

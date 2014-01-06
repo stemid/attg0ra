@@ -22,7 +22,9 @@ config.read('attg0ra.cfg')
 class DateEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
-            return str(obj)
+            #return str(obj)
+            return obj.isoformat()
+            #return obj.strftime('%Y-%m-%dT%H:%MZ')
         return JSONEncoder.default(self, obj)
 
 # Detta är för att angular ska stödja CORS, alltså olika domäner för gränssnitt
