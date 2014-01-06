@@ -19,19 +19,18 @@ todoAppControllers.controller('todoListCtrl',
   function ($scope, $http, $log, $modal, todoSettings) {
     // Här hämtas JSON data från en webbserver med $http tjänsten, som är
     // definierad i början som ett beroende för controllern. 
-    $http.get(todoSettings.apiUrl).
-      success(function (data, status) {
-        $log.info('HTTP GET returned: ' + data + ', status: ' + status);
-        $scope.todos = data;
-      }).
-      error(function (data, status, headers, config) {
-        $log.info('HTTP GET returned error: ' + status);
-        $scope.todos = [
-          {
-            'title': 'No items found'
-          }
-        ];
-      });
+    $scope.reload = function () {
+      $http.get(todoSettings.apiUrl).
+        success(function (data, status) {
+          $log.info('GET Success');
+          $scope.todos = data;
+        }).
+        error(function (data, status, headers, config) {
+          $log.info('GET Fail');
+          $scope.todos = [];
+        });
+    }
+    $scope.reload();
 
     $scope.todo = {
       inputTitle: null,
@@ -46,9 +45,10 @@ todoAppControllers.controller('todoListCtrl',
         controller: function ($scope, $modalInstance, $log, todo) {
           $scope.todo = todo;
           $scope.create = function () {
-            var jsonData = JSON.stringify($scope.todo);
-            $log.info($scope.todo);
-            $log.info('Submitting form: ' + todoSettings.apiUrl + jsonData);
+            // Jag förstår inte hur man ska använda application/json här, 
+            // verkar ha något med http://www.html5rocks.com/en/tutorials/cors/
+            // att göra. 
+            //$http.defaults.headers.post["Content-Type"] = "application/json";
             $http({
               method: 'POST',
               headers: {
@@ -59,6 +59,10 @@ todoAppControllers.controller('todoListCtrl',
             }).
               success(function () {
                 $modalInstance.dismiss('cancel');
+              }).
+              error(function (data, status, headers, config) {
+                $log.error('Could not POST, received error');
+                $log.error(status);
               });
           };
           $scope.close = function () {
@@ -73,6 +77,28 @@ todoAppControllers.controller('todoListCtrl',
         }
       });
     }
+
+    // Återställ sökformulär
+    $scope.reset_query = function () {
+      $scope.query = '';
+    }
+
+    // Radera sak att göra
+    $scope.delete = function (edited) {
+      $http({
+        method: 'DELETE',
+        url: todoSettings.apiUrl + '/' + edited
+      }).
+        success(function () {
+          $log.info('Success DELETE');
+          $scope.reload();
+        }).
+        error(function () {
+          $log.error('Could not DELETE');
+        });
+    }
+
+    // Slut av controller
   }
 ]);
 

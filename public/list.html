@@ -1,11 +1,46 @@
-<div class="text-center">
-  <p><button class="btn col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-click="open()">Skapa ny</button></p>
+<div class="row" id="todo-search">
+  <div class="col-lg-12">
+    <div class="input-group">
+      <input 
+      type="text" 
+      class="form-control" 
+      ng-model="query" 
+      placeholder="Sök bland titlar...">
+      <span class="input-group-btn">
+        <button 
+          title="Rensa sökfält"
+          class="btn btn-default" 
+          ng-click="reset_query()"
+          type="button">
+          <span class="glyphicon glyphicon-remove-circle"></span>
+        </button>
+      </span>
+    </div>
+  </div>
 </div>
 
-<input id="todo-search" class="form-control" ng-model="query" placeholder="Sök...">
+<div class="row">
+  <div class="col-lg-12">
+    <button 
+      class="btn col-xs-6 col-sm-6 col-md-6 col-lg-6" 
+      title="Skapa ny sak att göra"
+      ng-click="open()">Skapa ny <span class="glyphicon glyphicon-pencil"></span></button>
+  </div>
+</div>
 
-<ul id="todo-list">
-  <li ng-repeat="todo in todos | filter:query">
-    <a href="#/todo/{{todo.id}}" class="todo-link">{{todo.title}}</a>
-  </li>
-</ul>
+<table id="todo-list" class="table table-condensed table-hover">
+  <thead>
+    <tr>
+      <td>Titel</td>
+      <td>Senast ändrad</td>
+      <td>Radera</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="todo in todos | filter:query">
+      <td>{{ todo.title }}</td>
+      <td>{{ todo.created | date:'short' }}</td>
+      <td><a href="/#/todos" ng-click="delete(todo.edited)" id="delete-link"><i class="glyphicon glyphicon-trash"></i></a></td>
+    </tr>
+  </tbody>
+</table>

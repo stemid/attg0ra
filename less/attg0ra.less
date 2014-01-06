@@ -13,19 +13,32 @@ body {
   .rounded(5px);
 }
 
+@media (max-width: @screen-sm-min) {
+  #content-wrap {
+    margin-top:0px;
+  }
+}
+
 .btn {
   background-color:#046380;
   color:#EFECCA;
 }
 
 .btn:hover {
-  background-color:#E6E2AF;
-  color:#046380;
-  border:1px solid #046380;
+  background-color:#046380;
+  color:#E6E2AF;
 }
 
 #todo-search {
   margin-bottom:25px;
+}
+
+thead {
+  font-weight:bold;
+}
+
+.table-hover tbody tr:hover td {
+  background-color:#E6E2AF !important;
 }
 
 /* Fix for modal in BS3 with Angular UI */

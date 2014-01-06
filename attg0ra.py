@@ -1,3 +1,4 @@
+# coding: utf-8
 # Very standard JSON handler for the ToDo app.
 
 from __future__ import print_function
@@ -5,10 +6,16 @@ from sys import stderr
 from urllib import urlencode, unquote
 from json import dumps, loads, JSONEncoder
 from datetime import datetime
+from ConfigParser import ConfigParser
 from bottle import route, run, request, default_app, response, debug
 from Todo.Database import Database
 
+# Global åtkomst till databasen
 db = Database()
+
+# Global configuration
+config = ConfigParser()
+config.read('attg0ra.cfg')
 
 # This is for encoding datetime objects to str since json cannot serialize
 # datetime objects. Hooks into the default method of JSONEncoder class. 
@@ -18,10 +25,24 @@ class DateEncoder(JSONEncoder):
             return str(obj)
         return JSONEncoder.default(self, obj)
 
+# This is for angular $http.post(), ugh vad svårt att fortsätta skriva på 
+# svenska. 
+# Jag tror inte detta behövs längre eftersom jag inte kan lista ut hur jag ska 
+# använda application/json med $http.post() i Angular. 
+@route('/', method='OPTIONS')
+@route('/:#.*#', method='OPTIONS')
+def options():
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Methods', 'GET POST UPDATE DELETE')
+    response.add_header('Access-Control-Allow-Headers', 'X-Custom-Header')
+
+    return 
+
 # List all the ToDo items or get one specific item.
 @route('/', method='GET')
 @route('/<date>', method='GET')
 def list(date=None):
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
     response.content_type = 'application/json'
 
     if date is not None:
@@ -53,14 +74,15 @@ def list(date=None):
 # Create a new item by POST.
 @route('/', method='POST')
 def create():
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
     response.content_type = 'application/json'
 
-    print(response.body, file=stderr)
+    print(request.content_type, file=stderr)
     created = datetime.now()
     try:
-        jsonBody = loads(response.body)
-        title = request.json.get('inputTitle', 'No title')
-        todo = request.json.get('inputTodo', 'No content')
+        jsonBody = loads(request.body.getvalue())
+        title = jsonBody.get('inputTitle', 'No title')
+        todo = jsonBody.get('inputTodo', 'No content')
     except Exception as e:
         response.status = 500
         return { 'error': str(e) }
@@ -82,6 +104,7 @@ def create():
 # Delete an item.
 @route('/<date>', method='DELETE')
 def delete(date):
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
     response.content_type = 'application/json'
 
     edited = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
@@ -105,6 +128,7 @@ def delete(date):
 # Update an item.
 @route('/<date>', method='UPDATE')
 def update(date):
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
     response.content_type = 'application/json'
 
     edited = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')

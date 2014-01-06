@@ -11,7 +11,7 @@ var todoApp = angular.module('todoApp', [
 ]);
 
 todoApp.constant('todoSettings', {
-  apiUrl: 'http://192.168.22.135:8000/'
+  apiUrl: 'http://0.0.0.0:8000'
 });
 
 // Här definieras routes precis som i bottle.py t.ex.
@@ -20,8 +20,13 @@ todoApp.constant('todoSettings', {
 // av routeProvider objektet tillbaka. 
 // Varje anrop som ska använda sig av någon sorts dynamisk data måste även ange
 // en controller som ska tillhandahålla datan. 
-todoApp.config(['$routeProvider',
-  function ($routeProvider) {
+todoApp.config(['$routeProvider', '$httpProvider', 
+  function ($routeProvider, $httpProvider) {
+    // Först aktivera CORS (Cross Site JS Requests)
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
+    // Sedan definiera routes
     $routeProvider.
       when('/todos', {
         templateUrl: 'list.html',
