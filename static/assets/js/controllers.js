@@ -80,10 +80,26 @@ todoAppControllers.controller('todoListCtrl',
             $modalInstance.dismiss('cancel');
           };
         },
-        resolve: {
+        resolve: { // Här lägger man till saker från ovanstående scope
           todo: function () {
             return $scope.todo;
           },
+          reload: function () {
+            return $scope.reload;
+          }
+        }
+      });
+    }
+
+    $scope.show = function (date) {
+      var showItemModal = $modal.open({
+        templateUrl: 'show.html',
+        controller: function ($scope, $modalInstance, $log, reload) {
+          $log.info(date);
+          $scope.reload = reload;
+          // Gör annat specifikt för show.html mallen
+        },
+        resolve: {
           reload: function () {
             return $scope.reload;
           }
