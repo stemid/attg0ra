@@ -22,11 +22,10 @@ todoAppControllers.controller('todoListCtrl',
     $scope.reload = function () {
       $http.get(todoSettings.apiUrl).
         success(function (data, status) {
-          $log.info('GET Success');
           $scope.todos = data;
         }).
         error(function (data, status, headers, config) {
-          $log.info('GET Fail');
+          $log.error('GET Fail');
           $scope.todos = [];
         });
     }
@@ -42,8 +41,13 @@ todoAppControllers.controller('todoListCtrl',
     $scope.open = function () {
       var createFormModal = $modal.open({
         templateUrl: 'create.html',
-        controller: function ($scope, $modalInstance, $log, todo) {
+        controller: function ($scope, $modalInstance, $log, todo, reload) {
+          // Sätt fokus i första fältet
+          $('#create-title-input').focus();
+
           $scope.todo = todo;
+          $scope.reload = reload;
+
           $scope.create = function () {
             // Jag förstår inte hur man ska använda application/json här, 
             // verkar ha något med http://www.html5rocks.com/en/tutorials/cors/
@@ -58,11 +62,18 @@ todoAppControllers.controller('todoListCtrl',
               data: $scope.todo
             }).
               success(function () {
+                // Återställ alla fält
+                $('#create-form').find("textarea input[type=text], textarea").val("");
+
+                // Stäng modalrutan
                 $modalInstance.dismiss('cancel');
+
+                // Ladda om listan med saker
+                $scope.reload();
               }).
               error(function (data, status, headers, config) {
-                $log.error('Could not POST, received error');
-                $log.error(status);
+                $log.error('POST fail');
+                $scope.post_status = 'Error: Failed to post';
               });
           };
           $scope.close = function () {
@@ -71,16 +82,13 @@ todoAppControllers.controller('todoListCtrl',
         },
         resolve: {
           todo: function () {
-            $log.info('resolving');
             return $scope.todo;
+          },
+          reload: function () {
+            return $scope.reload;
           }
         }
       });
-    }
-
-    // Återställ sökformulär
-    $scope.reset_query = function () {
-      $scope.query = '';
     }
 
     // Radera sak att göra
@@ -90,12 +98,10 @@ todoAppControllers.controller('todoListCtrl',
         url: todoSettings.apiUrl + '/' + edited
       }).
         success(function () {
-          $log.info('DELETE Success');
           $scope.reload();
         }).
         error(function () {
           $log.error('DELETE Fail');
-          $scope.reload();
         });
     }
 

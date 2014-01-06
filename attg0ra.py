@@ -25,10 +25,8 @@ class DateEncoder(JSONEncoder):
             return str(obj)
         return JSONEncoder.default(self, obj)
 
-# This is for angular $http.post(), ugh vad svårt att fortsätta skriva på 
-# svenska. 
-# Jag tror inte detta behövs längre eftersom jag inte kan lista ut hur jag ska 
-# använda application/json med $http.post() i Angular. 
+# Detta är för att angular ska stödja CORS, alltså olika domäner för gränssnitt
+# och API. 
 @route('/', method='OPTIONS')
 @route('/<date>', method='OPTIONS')
 def options(date=None):
