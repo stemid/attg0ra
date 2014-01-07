@@ -79,7 +79,6 @@ def create():
     response.add_header('Access-Control-Allow-Methods', 'POST')
     response.content_type = 'application/json'
 
-    print(request.content_type, file=stderr)
     created = datetime.now()
     try:
         jsonBody = loads(request.body.getvalue())
