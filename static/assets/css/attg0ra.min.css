@@ -885,6 +885,8 @@ th.hidden-lg,td.hidden-lg{display:table-cell !important;}
 #todo-create{margin-bottom:25px;}
 @media (max-width:768px){#todo-search{margin-bottom:5px;} #todo-create{margin-bottom:5px;}}thead{font-weight:bold;}
 .table-hover tbody tr:hover td{background-color:#E6E2AF !important;}
+.delete-column{text-align:center;}
+.delete-link{color:#d40d12;}
 .modal{display:block;height:0;overflow:visible;}
 .modal-body:before,.modal-body:after{display:table;content:" ";}
 .modal-header:before,.modal-header:after{display:table;content:" ";}
