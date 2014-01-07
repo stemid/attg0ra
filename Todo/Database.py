@@ -9,10 +9,10 @@ class Database:
         config.read('attg0ra.cfg')
         self._conn = psycopg2.connect(
             "host='%s' dbname='%s' user='%s' password='%s'" % (
-            config.get('main', 'db_hostname'),
-            config.get('main', 'db_name'),
-            config.get('main', 'db_username'),
-            config.get('main', 'db_password')
+            config.get('db', 'hostname'),
+            config.get('db', 'name'),
+            config.get('db', 'username'),
+            config.get('db', 'password')
         ))
         self._cur = self._conn.cursor()
 

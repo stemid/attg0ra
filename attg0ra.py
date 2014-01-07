@@ -1,5 +1,5 @@
 # coding: utf-8
-# Very standard JSON handler for the ToDo app.
+# JSON gränssnitt för Att Göra applikationen.
 
 from __future__ import print_function
 from sys import stderr
@@ -13,12 +13,13 @@ from Todo.Database import Database
 # Global åtkomst till databasen
 db = Database()
 
-# Global configuration
+# Global konfiguration
 config = ConfigParser()
 config.read('attg0ra.cfg')
 
-# This is for encoding datetime objects to str since json cannot serialize
-# datetime objects. Hooks into the default method of JSONEncoder class. 
+# Detta används för att serialisera datetime objekt till JSON. Biblioteket
+# json klarar normalt sett inte av att hantera datetime objekt så de 
+# omvandlas till strängar. 
 class DateEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
@@ -32,17 +33,16 @@ class DateEncoder(JSONEncoder):
 @route('/', method='OPTIONS')
 @route('/<date>', method='OPTIONS')
 def options(date=None):
-    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'GET, POST, UPDATE, DELETE, OPTIONS')
     response.add_header('Access-Control-Allow-Headers', 'X-Custom-Header')
-
     return 
 
-# List all the ToDo items or get one specific item.
+# Lista alla inlägg eller hämta ett enskilt. 
 @route('/', method='GET')
 @route('/<date>', method='GET')
 def list(date=None):
-    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'GET')
     response.content_type = 'application/json'
 
@@ -72,10 +72,10 @@ def list(date=None):
     # Return JSON data of the list, use the DateEncoder for datetime fields
     return dumps(response_list, cls = DateEncoder)
 
-# Create a new item by POST.
+# Skapa nya inlägg.
 @route('/', method='POST')
 def create():
-    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'POST')
     response.content_type = 'application/json'
 
@@ -102,10 +102,10 @@ def create():
 
     return { 'status': 'OK' }
 
-# Delete an item.
+# Radera ett inlägg.
 @route('/<date>', method='DELETE')
 def delete(date):
-    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'DELETE')
     response.content_type = 'application/json'
 
@@ -127,10 +127,10 @@ def delete(date):
 
     return { 'status': 'Deleted' }
 
-# Update an item.
+# Uppdatera ett inlägg
 @route('/<date>', method='UPDATE')
 def update(date):
-    response.add_header('Access-Control-Allow-Origin', config.get('main', 'ui_host'))
+    response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'UPDATE')
     response.content_type = 'application/json'
 
@@ -161,7 +161,10 @@ def update(date):
     return { 'status': 'Updated' }
 
 if __name__ == '__main__':
-    run(host='0.0.0.0', port=8000)
-    debug(True)
+    run(
+        host = config.get('api', 'host'), 
+        port = config.get('api', 'port')
+    )
+    debug(config.get('api', 'debug'))
 else:
     application = default_app()
