@@ -16,7 +16,7 @@ Den är gjord i två delar, först ett JSON gränssnitt mot en databas, och seda
 
 Eftersom applikationen är gjord i två delar så måste man även installera den på det viset, först kan man antingen starta JSON gränssnittet med den inbyggda webbservern så här. 
 
-  python attg0ra.py
+    python attg0ra.py
 
 Redigera filen attg0ra.cfg för att avgöra var den ska lyssna, det är ingen arbetshäst men den duger för en personlig lista. 
 
@@ -28,17 +28,17 @@ Att göra: Skriv om hur man driftar servern med Nginx/Apache och WSGI.
 
 Webbgränssnittet kräver bara en webbläsare som kan läsa HTML egentligen, problemet är att filerna i katalogen public/ måste kunna läsa filerna i katalogen static/assets/js/. Därför kan man använda en simpel nginx konfiguration. 
 
-  server {
-    listen 8000;
-    server_name localhost;
-    location / {
-      root attg0ra/public;
-      index index.html;
+    server {
+      listen 8000;
+      server_name localhost;
+      location / {
+        root attg0ra/public;
+        index index.html;
+      }
+      location /static {
+        alias attg0ra/static;
+      }
     }
-    location /static {
-      alias attg0ra/static;
-    }
-  }
 
 Redigera sedan filen attg0ra.cfg och se till att ui_host stämmer överens med värdnamnet där ni använder webbgränssnittet. En begäran mot JSON gränssnittet måste komma från den adressen för att fungera. 
 
