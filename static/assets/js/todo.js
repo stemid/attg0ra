@@ -10,8 +10,10 @@ var todoApp = angular.module('todoApp', [
   'todoAppControllers'
 ]);
 
+// Globala konstanter som kan användas för t.ex. inställningar.
 todoApp.constant('todoSettings', {
-  apiUrl: 'http://ihack.swehack.local:8000'
+  apiUrl: 'http://ihack.swehack.local:8000',
+  maxTitleLength: 50
 });
 
 // Här definieras routes precis som i bottle.py t.ex.
@@ -41,3 +43,19 @@ todoApp.config(['$routeProvider', '$httpProvider',
     });
   }
 ]);
+
+// Här definierar jag filter som kan användas i HTML mallarna för att 
+// behandla textvärden. 
+// Detta är också ett exempel på injektion av beroenden i ett filter. 
+todoApp.filter('cutOffString', ['todoSettings', function ($log, todoSettings) {
+  return function (input, length) {
+    // Så här kan jag ha ett standardvärde för ett funktionsargument. 
+    length = typeof length !== 'undefined' ? length : todoSettings.maxTitleLength;
+
+    if (input.length+3 > length) {
+      return input.substr(0, length) + '...';
+    } else {
+      return input;
+    }
+  };
+}]);

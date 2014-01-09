@@ -7,14 +7,14 @@ var todoAppControllers = angular.module('todoAppControllers', []);
 // I controllern ska man definiera hur data ska hanteras, var data kommer ifrån.
 // Till exempel här där data hämtas från en webbserver och stoppas in i $scope
 // för att göras tillgängligt till en mall som använder sig av controllern. 
-todoAppControllers.controller('todoListCtrl', 
-                              [ // Här listas beroenden innan själva 
-                                // funktionskoden. 
-                                '$scope', 
-                                '$http', 
-                                '$log',
-                                '$modal',
-                                'todoSettings',
+todoAppControllers.controller('todoListCtrl', [
+  // Här listas beroenden innan själva 
+  // funktionskoden. 
+  '$scope', 
+  '$http', 
+  '$log',
+  '$modal',
+  'todoSettings',
 
   function ($scope, $http, $log, $modal, todoSettings) {
     // Här hämtas JSON data från en webbserver med $http tjänsten, som är
@@ -38,7 +38,7 @@ todoAppControllers.controller('todoListCtrl',
     
     // Här kan även definieras allt möjligt annat, som t.ex. en modal med ett 
     // formulär som ska visas i samma controller
-    $scope.open = function () {
+    $scope.open_create = function () {
       var createFormModal = $modal.open({
         templateUrl: 'create.html',
         controller: function ($scope, $modalInstance, $log, todo, reload) {
@@ -91,26 +91,6 @@ todoAppControllers.controller('todoListCtrl',
       });
     }
 
-    $scope.show = function (id) {
-      var showItemModal = $modal.open({
-        templateUrl: 'show.html',
-        controller: function ($scope, $modalInstance, $log, reload) {
-          $log.info(id);
-          $scope.reload = reload;
-          // Gör annat specifikt för show.html mallen
-
-          $scope.close = function () {
-            $modalInstance.dismiss('cancel');
-          };
-        },
-        resolve: {
-          reload: function () {
-            return $scope.reload;
-          }
-        }
-      });
-    }
-
     // Radera sak att göra
     $scope.delete = function (id) {
       $http({
@@ -129,8 +109,37 @@ todoAppControllers.controller('todoListCtrl',
   }
 ]);
 
-todoAppControllers.controller('todoShowCtrl', ['$scope', '$routeParams',
-  function ($scope, $routeParams) {
+// Controller för att visa en sak.
+todoAppControllers.controller('todoShowCtrl', [
+  '$scope', 
+  '$routeParams',
+  '$http',
+  '$log',
+  '$modal',
+  '$sce',
+  'todoSettings',
+
+  function ($scope, $routeParams, $http, $log, $modal, $sce, todoSettings) {
     $scope.todoId = $routeParams.todoId;
+
+    $scope.fetch = function (id) {
+      $http.get(todoSettings.apiUrl + '/' + id).
+        success(function (data, status) {
+          $scope.todo = data[0];
+          // $sce är intressant här för det är så Angular låter mig 
+          // använda HTML direkt i sidan. Annars hade det varit 
+          // väldigt farligt för Javascript att kunna stoppa in HTML
+          // i en webbsida. 
+          try {
+            $scope.todo.html = $sce.trustAsHtml(marked($scope.todo.text));
+          } catch (e) {
+            $scope.todo.html = $sce.trustAsHtml('');
+          }
+        }).
+        error(function (data, status, headers, config) {
+          $log.error('GET fail');
+        });
+    }
+    $scope.fetch($scope.todoId);
   }
 ]);

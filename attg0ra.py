@@ -25,7 +25,7 @@ class DateEncoder(JSONEncoder):
         if isinstance(obj, datetime):
             #return str(obj)
             return obj.isoformat()
-            #return obj.strftime('%Y-%m-%dT%H:%MZ')
+            #return obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         return JSONEncoder.default(self, obj)
 
 # Detta är för att angular ska stödja CORS, alltså olika domäner för gränssnitt
@@ -87,8 +87,9 @@ def create():
 
     text = dumps({
         'title': title,
-        'text': todo
-    })
+        'text': todo,
+        'created': created
+    }, cls = DateEncoder)
 
     try:
         db.add_post(title, text)
@@ -130,6 +131,7 @@ def update(id):
 
     title = request.forms.get('inputTitle', 'No title')
     todo = request.forms.get('inputTodo', 'No content')
+    edited = datetime.now()
 
     try:
         if db.is_post(id) is False:
@@ -142,7 +144,8 @@ def update(id):
     text = dumps({
         'id': id,
         'title': title,
-        'text': todo
+        'text': todo,
+        'edited': edited
     })
 
     try:
@@ -159,5 +162,5 @@ if __name__ == '__main__':
         port = config.get('api', 'port')
     )
     debug(config.get('api', 'debug'))
-else:
+else: # Annars antar vi WSGI
     application = default_app()

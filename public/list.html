@@ -24,24 +24,41 @@
     <button 
       class="btn col-xs-6 col-sm-6 col-md-6 col-lg-6" 
       title="Skapa ny sak att göra"
-      ng-click="open()">Skapa ny <span class="glyphicon glyphicon-pencil"></span></button>
+      ng-click="open_create()">Skapa ny <span class="glyphicon glyphicon-pencil"></span>
+    </button>
   </div>
 </div>
 
-<table id="todo-list" class="table table-condensed table-hover">
+<table 
+  ng-init="sortKey='created'; reverse=!reverse" 
+  id="todo-list" 
+  class="table table-condensed table-hover">
   <thead>
     <tr>
-      <td>Titel</td>
-      <td>Senast ändrad</td>
-      <td>Radera</td>
+      <td>
+        <a href="" ng-click="sortKey = 'title'; reverse=!reverse">Titel</a>
+      </td>
+      <td>
+        <a href="" ng-click="sortKey = 'created'; reverse=!reverse">Skapad</a>
+      </td>
+      <td class="delete-column">Radera</td>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="todo in todos | filter:query">
-      <td><a href="#" ng-href="/todo/{{ todo.id }}">{{ todo.title }}</a></td>
-      <td>{{ todo.edited | date:'yyyy-MM-dd HH:mm' }}</td>
+    <tr ng-repeat="todo in todos | filter:query | orderBy:sortKey:reverse">
+      <td>
+        <a 
+          href="#/todo/{{ todo.id }}" 
+          title="{{ todo.title }}">
+          {{ todo.title | cutOffString:50 }} 
+          <span 
+            class="glyphicon glyphicon-paperclip" 
+            ng-if="todo.text"></span>
+        </a>
+      </td>
+      <td>{{ todo.created | date:'yyyy-MM-dd HH:mm' }}</td>
       <td class="delete-column">
-        <a href="/#/todos" ng-click="delete(todo.id)" class="delete-link">
+        <a title="Radera" href="/#/todos" ng-click="delete(todo.id)" class="delete-link">
           <i class="glyphicon glyphicon-trash"></i>
         </a>
       </td>

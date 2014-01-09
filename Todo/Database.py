@@ -40,7 +40,7 @@ class Database:
     def delete_post(self, id):
         cur = self._cur
         cur.execute(
-            'delete from todo where id = %d', 
+            'delete from todo where id = %s', 
             (id,)
         )
         self._conn.commit()
