@@ -31,8 +31,8 @@ class DateEncoder(JSONEncoder):
 # Detta är för att angular ska stödja CORS, alltså olika domäner för gränssnitt
 # och API. 
 @route('/', method='OPTIONS')
-@route('/<date>', method='OPTIONS')
-def options(date=None):
+@route('/<id:int>', method='OPTIONS')
+def options(id=None):
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'GET, POST, UPDATE, DELETE, OPTIONS')
     response.add_header('Access-Control-Allow-Headers', 'X-Custom-Header')
@@ -40,24 +40,21 @@ def options(date=None):
 
 # Lista alla inlägg eller hämta ett enskilt. 
 @route('/', method='GET')
-@route('/<date>', method='GET')
-def list(date=None):
+@route('/<id:int>', method='GET')
+def list(id=None):
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'GET')
     response.content_type = 'application/json'
 
-    if date is not None:
-        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
-
     # Make a list of items to respond with
     response_list = []
     try:
-        for (edited, todo) in db:
-            if date is not None and edited != date:
+        for (item_id, item_data) in db:
+            if id is not None and item_id != id:
                 continue
-            todo_dict = loads(todo)
+            todo_dict = loads(item_data)
             todo_dict.update({
-                'edited': edited
+                'id': item_id
             })
             response_list.append(todo_dict)
     except Exception as e:
@@ -89,13 +86,12 @@ def create():
         return { 'error': str(e) }
 
     text = dumps({
-        'created': str(created),
         'title': title,
         'text': todo
     })
 
     try:
-        db.add_post(created, title, text)
+        db.add_post(title, text)
     except Exception as e:
         response.status = 500
         return { 'error': str(e) }
@@ -103,16 +99,14 @@ def create():
     return { 'status': 'OK' }
 
 # Radera ett inlägg.
-@route('/<date>', method='DELETE')
-def delete(date):
+@route('/<id:int>', method='DELETE')
+def delete(id):
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'DELETE')
     response.content_type = 'application/json'
 
-    edited = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
-
     try:
-        if db.is_post(edited) is False:
+        if db.is_post(id) is False:
             response.status = 404
             return { 'error': 'Not found' }
     except Exception as e:
@@ -120,7 +114,7 @@ def delete(date):
         return { 'error': str(e) }
 
     try:
-        db.delete_post(edited)
+        db.delete_post(id)
     except Exception as e:
         response.status = 500
         return { 'error': str(e) }
@@ -128,18 +122,17 @@ def delete(date):
     return { 'status': 'Deleted' }
 
 # Uppdatera ett inlägg
-@route('/<date>', method='UPDATE')
-def update(date):
+@route('/<id:int>', method='UPDATE')
+def update(id):
     response.add_header('Access-Control-Allow-Origin', config.get('main', 'url'))
     response.add_header('Access-Control-Allow-Methods', 'UPDATE')
     response.content_type = 'application/json'
 
-    edited = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
     title = request.forms.get('inputTitle', 'No title')
     todo = request.forms.get('inputTodo', 'No content')
 
     try:
-        if db.is_post(edited) is False:
+        if db.is_post(id) is False:
             response.status = 404
             return { 'error': 'Not found' }
     except Exception as e:
@@ -147,13 +140,13 @@ def update(date):
         return { 'error': str(e) }
 
     text = dumps({
-        'created': str(edited),
+        'id': id,
         'title': title,
         'text': todo
     })
 
     try:
-        db.update_post(edited, text)
+        db.update_post(id, text)
     except Exception as e:
         response.status = 500
         return { 'error': str(e) }

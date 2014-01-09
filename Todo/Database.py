@@ -30,34 +30,34 @@ class Database:
         else:
             raise StopIteration
 
-    def add_post(self, edited, title, text):
+    def add_post(self, title, text):
         cur = self._cur
         cur.execute(
             'insert into todo (data) values (%s)', (text,)
         )
         self._conn.commit()
 
-    def delete_post(self, edited):
+    def delete_post(self, id):
         cur = self._cur
         cur.execute(
             'delete from todo where id = %d', 
-            (edited,)
+            (id,)
         )
         self._conn.commit()
 
-    def update_post(self, edited, text):
+    def update_post(self, id, text):
         cur = self._cur
         cur.execute(
             'update todo set (data = %s) where id = %d',
-            (edited, text, )
+            (id, text, )
         )
         self._conn.commit()
 
-    def is_post(self, edited):
+    def is_post(self, id):
         cur = self._cur
         cur.execute(
             'select id from todo where id = %s',
-            (edited,)
+            (id,)
         )
         if cur.fetchone() is not None:
             return True
