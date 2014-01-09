@@ -19,7 +19,7 @@ class Database:
     def __iter__(self):
         self._iter_cur = self._conn.cursor()
         cur = self._iter_cur
-        cur.execute('select edited, data from todo order by edited desc')
+        cur.execute('select id, data from todo')
         return self
 
     def next(self):
@@ -40,7 +40,7 @@ class Database:
     def delete_post(self, edited):
         cur = self._cur
         cur.execute(
-            "delete from todo where edited = %s", 
+            'delete from todo where id = %d', 
             (edited,)
         )
         self._conn.commit()
@@ -48,7 +48,7 @@ class Database:
     def update_post(self, edited, text):
         cur = self._cur
         cur.execute(
-            "update todo set (edited = %s, data = %s) where edited = %s",
+            'update todo set (data = %s) where id = %d',
             (edited, text, )
         )
         self._conn.commit()
@@ -56,7 +56,7 @@ class Database:
     def is_post(self, edited):
         cur = self._cur
         cur.execute(
-            "select edited from todo where edited = %s",
+            'select id from todo where id = %s',
             (edited,)
         )
         if cur.fetchone() is not None:
