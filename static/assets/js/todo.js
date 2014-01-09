@@ -33,7 +33,7 @@ todoApp.config(['$routeProvider', '$httpProvider',
         controller: 'todoListCtrl'
     }).
       when('/todo/:todoId', {
-        templateUrl: 'todo.html',
+        templateUrl: 'show.html',
         controller: 'todoShowCtrl'
     }).
       otherwise({

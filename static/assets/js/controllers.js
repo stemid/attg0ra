@@ -91,11 +91,11 @@ todoAppControllers.controller('todoListCtrl',
       });
     }
 
-    $scope.show = function (date) {
+    $scope.show = function (id) {
       var showItemModal = $modal.open({
         templateUrl: 'show.html',
         controller: function ($scope, $modalInstance, $log, reload) {
-          $log.info(date);
+          $log.info(id);
           $scope.reload = reload;
           // Gör annat specifikt för show.html mallen
 
@@ -112,10 +112,10 @@ todoAppControllers.controller('todoListCtrl',
     }
 
     // Radera sak att göra
-    $scope.delete = function (edited) {
+    $scope.delete = function (id) {
       $http({
         method: 'DELETE',
-        url: todoSettings.apiUrl + '/' + edited
+        url: todoSettings.apiUrl + '/' + id
       }).
         success(function () {
           $scope.reload();

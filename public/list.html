@@ -38,9 +38,13 @@
   </thead>
   <tbody>
     <tr ng-repeat="todo in todos | filter:query">
-      <td><a href="#" ng-click="show(todo.edited)">{{ todo.title }}</a></td>
+      <td><a href="#" ng-href="/todo/{{ todo.id }}">{{ todo.title }}</a></td>
       <td>{{ todo.edited | date:'yyyy-MM-dd HH:mm' }}</td>
-      <td class="delete-column"><a href="/#/todos" ng-click="delete(todo.edited)" class="delete-link"><i class="glyphicon glyphicon-trash"></i></a></td>
+      <td class="delete-column">
+        <a href="/#/todos" ng-click="delete(todo.id)" class="delete-link">
+          <i class="glyphicon glyphicon-trash"></i>
+        </a>
+      </td>
     </tr>
   </tbody>
 </table>
