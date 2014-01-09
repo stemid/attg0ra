@@ -45,3 +45,63 @@ Redigera sedan filen attg0ra.cfg och se till att ui_host stämmer överens med v
 ## Databas
 
 Att göra: Skriv mer om databasen. Det ligger ett databasschema i katalogen tools/. 
+
+# Vad har jag lärt mig?
+
+## Bottle.py
+
+Behöver inte gå in djupt här eftersom det påminner mycket om web.py men detta var mitt första projekt i bottle så helt klart har man lärt sig saker. 
+
+### CORS med OPTIONS
+
+Det är ju självklart nu men tog mig ett tag att förstå, eftersom Angulars gränssnitt körs under en helt annan domän än JSON gränssnittet så måste man ju tillåta den domänen att göra anrop. Annars hade det varit en enorm säkerhetsrisk. 
+
+Angular gör OPTIONS anrop när den ser att domänen inte matchar, den letar då efter vissa HTTP headers som ska tala om främst vilka domäner som är tillåtna, vilka andra headers och vilka metoder. 
+
+Dessa speciella headers fick jag stoppa in i varje route-funktion, hade varit kul att kunna göra det globalt men jag vet inte hur än.
+
+### Less is more
+
+Todo.Database är så minimal som möjligt. 
+
+### Debug
+
+Bottle verkar ännu mer minimal än web.py i hur den knyter upp stdout för svar till klienter. I web.py skickas ju t.ex. print-data direkt till konsollen där man startat servern. I bottle så försvinner datan om den inte skickas till stderr istället. 
+
+### JSONEncoder
+
+Detta förstod jag redan men bra att nämna möjligheten att returnera vilket JSON-kompatibelt objekt som helst med DateEncoder klassen som ärver från JSONEncoder. 
+
+Hjälpte när jag hade problem i Angular med datumformatet. 
+
+## ConfigParser
+
+Dagarna då jag använde json-filer för konfiguration är över. 
+
+## Angular.js
+
+Lärde mig otroligt mycket eftersom jag aldrig arbetat med något liknande. Det har tagit mig väldigt lång tid också eftersom jag stapplat mig fram utan att ha en djup förståelse för Javascript OOP som jag tror hade hjälpt. 
+
+Ska inte nämna självklara saker som routes och controllers eftersom man lär sig det i Angulars phonecat tutorial. 
+
+### CORS
+
+Här fick jag aktivera CORS med $httpProvider i config(). 
+
+    $httpProvider.defaults.useXDomain = true;
+
+Se js/todo.js för mer info. 
+
+### Arv
+
+$httpProvider är som en mall för $http, så man kan ange standardvärden där som ärvs ner till $http senare i koden. 
+
+T.ex. hur jag anger ett standardvärde i app.config() med $httpProvider och sedan drar nytta av det i en controller när jag använder $http-tjänsten. 
+
+Ursäkta svengelskan...
+
+### Filter
+
+Har skapat filter när jag gick igenom Angular Phonecat tutorial men det var kul att få ett skarpt fall i js/todo.js också. 
+
+Filtret cutOffString i js/todo.js var också ett bra exempel på injektion av beroenden i filter och standardargument för Javascript-funktioner. 
