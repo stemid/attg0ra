@@ -45,11 +45,11 @@ class Database:
         )
         self._conn.commit()
 
-    def update_post(self, id, text):
+    def update_post(self, id, data):
         cur = self._cur
         cur.execute(
-            'update todo set (data = %s) where id = %d',
-            (id, text, )
+            'update todo set data = %s where id = %s',
+            (data, id, )
         )
         self._conn.commit()
 

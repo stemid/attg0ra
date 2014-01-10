@@ -129,9 +129,15 @@ def update(id):
     response.add_header('Access-Control-Allow-Methods', 'UPDATE')
     response.content_type = 'application/json'
 
-    title = request.forms.get('inputTitle', 'No title')
-    todo = request.forms.get('inputTodo', 'No content')
     edited = datetime.now()
+    try:
+        jsonBody = loads(request.body.getvalue())
+        title = jsonBody.get('title', 'No title')
+        todo = jsonBody.get('text', '')
+        created = jsonBody.get('created', datetime.now())
+    except Exception as e:
+        response.status = 500
+        return { 'error': str(e) }
 
     try:
         if db.is_post(id) is False:
@@ -141,15 +147,16 @@ def update(id):
         response.status = 500
         return { 'error': str(e) }
 
-    text = dumps({
+    data = dumps({
         'id': id,
         'title': title,
         'text': todo,
+        'created': created,
         'edited': edited
-    })
+    }, cls = DateEncoder)
 
     try:
-        db.update_post(id, text)
+        db.update_post(id, data)
     except Exception as e:
         response.status = 500
         return { 'error': str(e) }

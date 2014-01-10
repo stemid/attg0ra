@@ -29,6 +29,7 @@ todoAppControllers.controller('todoListCtrl', [
           $scope.todos = [];
         });
     }
+    // Skapar en funktion för att lätt kunna återanvända den senare.
     $scope.reload();
 
     $scope.todo = {
@@ -38,6 +39,7 @@ todoAppControllers.controller('todoListCtrl', [
     
     // Här kan även definieras allt möjligt annat, som t.ex. en modal med ett 
     // formulär som ska visas i samma controller
+    // open_create modal
     $scope.open_create = function () {
       var createFormModal = $modal.open({
         templateUrl: 'create.html',
@@ -45,9 +47,11 @@ todoAppControllers.controller('todoListCtrl', [
           // Sätt fokus i första fältet
           $('#create-title-input').focus();
 
+          // Kopiering till lokalt scope
           $scope.todo = todo;
           $scope.reload = reload;
 
+          // Funktionen som anropas när formuläret skickas
           $scope.create = function () {
             // Jag förstår inte hur man ska använda application/json här, 
             // verkar ha något med http://www.html5rocks.com/en/tutorials/cors/
@@ -89,7 +93,7 @@ todoAppControllers.controller('todoListCtrl', [
           }
         }
       });
-    }
+    } // Slut på open_create modal
 
     // Radera sak att göra
     $scope.delete = function (id) {
@@ -120,8 +124,12 @@ todoAppControllers.controller('todoShowCtrl', [
   'todoSettings',
 
   function ($scope, $routeParams, $http, $log, $modal, $sce, todoSettings) {
+    // Sak ID från adressfältet
     $scope.todoId = $routeParams.todoId;
 
+    $scope.todo = {};
+
+    // Saken från JSON API
     $scope.fetch = function (id) {
       $http.get(todoSettings.apiUrl + '/' + id).
         success(function (data, status) {
@@ -129,10 +137,11 @@ todoAppControllers.controller('todoShowCtrl', [
           // $sce är intressant här för det är så Angular låter mig 
           // använda HTML direkt i sidan. Annars hade det varit 
           // väldigt farligt för Javascript att kunna stoppa in HTML
-          // i en webbsida. 
+          // i en webbsida ofiltrerat. 
           try {
             $scope.todo.html = $sce.trustAsHtml(marked($scope.todo.text));
           } catch (e) {
+            $log.error(e);
             $scope.todo.html = $sce.trustAsHtml('');
           }
         }).
@@ -141,5 +150,50 @@ todoAppControllers.controller('todoShowCtrl', [
         });
     }
     $scope.fetch($scope.todoId);
+
+    // Redigera modal
+    $scope.open_edit = function () {
+      var editFormModal = $modal.open({
+        templateUrl: 'edit.html',
+        controller: function ($scope, $modalInstance, $log, todo, fetch) {
+          $('#edit-title-input').focus();
+
+          $scope.todo = todo;
+          $scope.fetch = fetch;
+          $log.info($scope.todo);
+
+          $scope.update = function () {
+            $http({
+              method: 'UPDATE',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+              },
+              url: todoSettings.apiUrl + '/' + $scope.todo.id, 
+              data: $scope.todo
+            }).
+              success(function () {
+              $('#edit-form').find("textarea input[type=text], textarea").val("");
+              $modalInstance.dismiss('cancel');
+              $scope.fetch($scope.todo.id);
+            }).
+              error(function (data, status, headers, config) {
+                $log.error('UPDATE fail');
+                $scope.edit_status = 'Error: Failed to update';
+              });
+          };
+          $scope.close = function () {
+            $modalInstance.dismiss('cancel');
+          };
+        }, // End of modal controller
+        resolve: {
+          todo: function () {
+            return $scope.todo;
+          },
+          fetch: function () {
+            return $scope.fetch;
+          }
+        }
+      });
+    } // Slut på redigera modal
   }
 ]);

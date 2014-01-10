@@ -105,3 +105,7 @@ Ursäkta svengelskan...
 Har skapat filter när jag gick igenom Angular Phonecat tutorial men det var kul att få ett skarpt fall i js/todo.js också. 
 
 Filtret cutOffString i js/todo.js var också ett bra exempel på injektion av beroenden i filter och standardargument för Javascript-funktioner. 
+
+### ng-click
+
+Specifikt tyckte jag knepet i public/list.html var häftigt där man kan sortera en lista väldigt enkelt genom att ange en sorteringsnyckel och en sorteringsordning i ng-click, som sedan läses in av orderBy filtret. 
