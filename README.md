@@ -12,17 +12,23 @@ Den är gjord i två delar, först ett JSON gränssnitt mot en databas, och seda
 
 # Installation
 
+Konfigurationsfilen attg0ra.cfg är inte komplex och innehåller redan alla alternativ. 
+
 ## JSON Server
 
-Eftersom applikationen är gjord i två delar så måste man även installera den på det viset, först kan man antingen starta JSON gränssnittet med den inbyggda webbservern så här. 
+Eftersom applikationen är gjord i två delar så kan man börja med JSON-gränssnittet.  
 
     python attg0ra.py
 
 Redigera filen attg0ra.cfg för att avgöra var den ska lyssna, det är ingen arbetshäst men den duger för en personlig lista. 
 
+Annars går det även att starta den med [uwsgi](http://uwsgi-docs.readthedocs.org/en/latest/WSGIquickstart.html) så här. 
+
+    uwsgi --http :8000 --wsgi-file attg0ra.py
+
 ### WSGI
 
-Att göra: Skriv om hur man driftar servern med Nginx/Apache och WSGI. 
+Det går även att drifta servern med [Nginx](http://wiki.nginx.org/HttpUwsgiModule)/Apache och WSGI. 
 
 ## Webbgränssnitt 
 
@@ -40,7 +46,7 @@ Webbgränssnittet kräver bara en webbläsare som kan läsa HTML egentligen, pro
       }
     }
 
-Redigera sedan filen attg0ra.cfg och se till att ui_host stämmer överens med värdnamnet där ni använder webbgränssnittet. En begäran mot JSON gränssnittet måste komma från den adressen för att fungera. 
+Redigera sedan filen attg0ra.cfg och se till att host stämmer överens med värdnamnet där ni använder webbgränssnittet. En begäran mot JSON gränssnittet måste komma från den adressen för att fungera. 
 
 ## Databas
 
