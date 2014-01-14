@@ -3,7 +3,6 @@
 
 from __future__ import print_function
 from sys import stderr
-from urllib import urlencode, unquote
 from json import dumps, loads, JSONEncoder
 from datetime import datetime
 from ConfigParser import ConfigParser
@@ -23,9 +22,7 @@ config.read('attg0ra.cfg')
 class DateEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
-            #return str(obj)
             return obj.isoformat()
-            #return obj.strftime('%Y-%m-%dT%H:%M:%SZ')
         return JSONEncoder.default(self, obj)
 
 # Detta är för att angular ska stödja CORS, alltså olika domäner för gränssnitt
