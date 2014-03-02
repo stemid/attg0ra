@@ -109,8 +109,7 @@ todoAppControllers.controller('todoListCtrl', [
         });
     }
 
-    // Slut av controller
-  }
+  } // Slut på Controller-funktion
 ]);
 
 // Controller för att visa en sak.
