@@ -50,7 +50,7 @@ Redigera sedan filen attg0ra.cfg och se till att host stämmer överens med vär
 
 ## Databas
 
-Att göra: Skriv mer om databasen. Det ligger ett databasschema i katalogen tools/. 
+Det ligger ett databasschema i katalogen tools/. 
 
 # Vad har jag lärt mig?
 
