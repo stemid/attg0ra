@@ -14,7 +14,8 @@ db = Database()
 
 # Global konfiguration
 config = ConfigParser()
-config.read('attg0ra.cfg')
+config.readfp(open('attg0ra.cfg'))
+config.read(['attg0ra_local.cfg'])
 
 # Detta används för att serialisera datetime objekt till JSON. Biblioteket
 # json klarar normalt sett inte av att hantera datetime objekt så de 

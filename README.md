@@ -14,6 +14,8 @@ Den är gjord i två delar, först ett JSON gränssnitt mot en databas, och seda
 
 Konfigurationsfilen attg0ra.cfg är inte komplex och innehåller redan alla alternativ. 
 
+En lokal konfigurationsfil kan skapas som heter attg0ra\_local.cfg och överskrider alla alternativ i den globala. 
+
 ## JSON Server
 
 Eftersom applikationen är gjord i två delar så kan man börja med JSON-gränssnittet.  

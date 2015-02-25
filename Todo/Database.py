@@ -1,4 +1,6 @@
 # Database access driver for ToDo app
+# Note: This is poorly made from my part, I shouldn't read the configuration
+# in so many places. - Stefan Midjich 2015-02-25
 
 from ConfigParser import ConfigParser
 import psycopg2
@@ -6,14 +8,15 @@ import psycopg2
 class Database:
     def __init__(self):
         config = ConfigParser()
-        config.read('attg0ra.cfg')
+        config.readfp(open('attg0ra.cfg'))
+        config.read(['attg0ra_local.cfg'])
         self._conn = psycopg2.connect(
-            "host='%s' dbname='%s' user='%s' password='%s'" % (
-            config.get('db', 'hostname'),
-            config.get('db', 'name'),
-            config.get('db', 'username'),
-            config.get('db', 'password')
-        ))
+            host = config.get('db', 'hostname'),
+            port = config.get('db', 'port'),
+            database = config.get('db', 'name'),
+            user = config.get('db', 'username'),
+            password = config.get('db', 'password')
+        )
         self._cur = self._conn.cursor()
 
     def __iter__(self):
