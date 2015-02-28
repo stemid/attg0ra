@@ -25,7 +25,7 @@ todoAppControllers.controller('todoListCtrl', [
           $scope.todos = data;
         }).
         error(function (data, status, headers, config) {
-          $log.error('GET Fail');
+          $log.error('GET Fail: Found no entries');
           $scope.todos = [];
         });
     }

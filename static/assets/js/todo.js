@@ -12,7 +12,7 @@ var todoApp = angular.module('todoApp', [
 
 // Globala konstanter som kan användas för t.ex. inställningar.
 todoApp.constant('todoSettings', {
-  apiUrl: 'http://ihack.swehack.local:8000',
+  apiUrl: 'http://localhost:8000',
   maxTitleLength: 50
 });
 
